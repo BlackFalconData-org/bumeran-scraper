@@ -10,7 +10,7 @@ Extract structured data from [bumeran.com.ar](https://bumeran.com.ar) — bumera
 
 **Search with filters** — Search by keyword and location. Filter by country, sort order, and more.
 
-**Detail enrichment** — Fetch full job descriptions, salary data for each listing.
+**Detail enrichment** — Fetch full job descriptions, contract type, work modality, and seniority level for each listing.
 
 **Incremental mode** — Only get new or changed listings since your last run. Content hash per listing — no duplicates, no re-processing.
 
@@ -59,22 +59,32 @@ Monitor listings, track trends, and analyze market dynamics with structured, ded
 
 ## FAQ
 
-<!-- WRITE: 4-6 Q&A pairs relevant to this product -->
-
 **Is it legal to scrape bumeran.com.ar?**
 Web scraping of publicly available data is generally legal. This actor only accesses publicly visible information. Always check the target site's terms of service for your specific use case.
 
+**Which countries are supported?**
+Argentina (bumeran.com.ar), Peru (bumeran.com.pe), Mexico (bumeran.com.mx), Venezuela (bumeran.com.ve), Chile (laborum.cl), Ecuador (multitrabajos.com), Panama (konzerta.com.pa), and Zona Jobs Argentina (zonajobs.com.ar).
+
 **How does incremental mode work?**
 Each listing gets a content hash. On subsequent runs, only new or changed listings are emitted — saving time, compute, and storage.
+
+**Can I search multiple keywords in one run?**
+Yes. Pass a JSON array for the `query` field (e.g. `["analista","desarrollador"]`) to search multiple terms and get deduplicated results in a single run.
+
+**Can I use this with the Apify API or MCP Server?**
+Yes. Start runs, pass inputs, and retrieve results via the [Apify API](https://docs.apify.com/api/v2). For AI agents and MCP workflows, enable compact mode to reduce payload size.
+
+**How many results can I get?**
+Up to 5,000 per run. The actual number depends on the search query and available listings on the platform for the selected country.
 
 ---
 
 ## Known limitations
 
-<!-- WRITE: 4-6 honest limitations -->
-
-- <!-- WRITE: limitation 1 -->
-- <!-- WRITE: limitation 2 -->
+- Salary data is rarely provided by employers on Bumeran — `salaryText` is null for the vast majority of listings.
+- Results per query are capped by the platform's own search index; very broad queries may not return all listings on the site.
+- Bumeran's API applies rate limits. Under heavy concurrent load from Apify's datacenter IPs, individual requests may be delayed (automatic retry is built in).
+- Listings from sponsored placements may appear multiple times across different queries; the actor deduplicates by job ID within a run.
 
 ---
 
